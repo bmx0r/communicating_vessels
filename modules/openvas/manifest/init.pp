@@ -1,14 +1,3 @@
-# /etc/puppet/manifests/site.pp
-stage { 'yum' : before => Stage['main'] }
-
-node scanner {
-	include openvas
-	group {
-		'puppet':
-		ensure => present,
-		gid => 20000
-	} 
-}
 class openvas($version = '0.1') {
 	Exec {
 		path => '/sbin:/bin:/usr/sbin:/usr/bin',
@@ -21,7 +10,7 @@ class openvas($version = '0.1') {
 			'/etc/openvas':
 				ensure => directory;
 			'/etc/openvas/openvassd.rules':
-				content => template('/tmp/vagrant-puppet/modules-0/openvas/templates/etc/openvas/openvassd.rules'),
+				content => template('openvas/etc/openvas/openvassd.rules'),
 				ensure  => file,
 				group   => root,
 				mode    => 0644,
@@ -29,7 +18,7 @@ class openvas($version = '0.1') {
 			'/etc/sysconfig':
 				ensure => directory;
 			'/etc/sysconfig/openvas-scanner':
-				content => template('/tmp/vagrant-puppet/modules-0/openvas/templates/etc/sysconfig/openvas-scanner'),
+				content => template('etc/sysconfig/openvas-scanner'),
 				ensure  => file,
 				group   => root,
 				mode    => 0644,
@@ -37,7 +26,7 @@ class openvas($version = '0.1') {
 			'/etc/yum.repos.d':
 				ensure => directory;
 			'/etc/yum.repos.d/atomic.repo':
-				content => template('/tmp/vagrant-puppet/modules-0/openvas/templates/etc/yum.repos.d/atomic.repo'),
+				content => template('etc/yum.repos.d/atomic.repo'),
 				ensure  => file,
 				group   => root,
 				mode    => 0644,
@@ -52,19 +41,19 @@ class openvas($version = '0.1') {
 		class yum {
 			package {
 				'nmap':
-					ensure => present;
+					ensure => '2:6.01-2.el6.art.x86_64';
 				'openvas':
-					ensure => present;
+					ensure => '1.0-3.el6.art.noarch';
 				'openvas-administrator':
-					ensure => present;
+					ensure => '1.2.1-2.el6.art.x86_64';
 				'openvas-cli':
-					ensure => present;
+					ensure => '1.1.5-3.el6.art.x86_64';
 				'openvas-libraries':
-					ensure => present;
+					ensure => '5.0.4-5.el6.art.x86_64';
 				'openvas-manager':
-					ensure => present;
+					ensure => '3.0.4-4.el6.art.x86_64';
 				'openvas-scanner':
-					ensure => present;
+					ensure => '3.3.1-2.el6.art.x86_64';
 			}
 		}
 		include yum
@@ -83,3 +72,6 @@ class openvas($version = '0.1') {
 	}
 	include services
 }
+
+# Then, declare it:
+    class {'openvas': }
