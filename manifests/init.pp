@@ -34,6 +34,12 @@ class openvas($version = '0.1') {
 				group   => root,
 				mode    => 0644,
 				owner   => root;
+			'/etc/sysconfig/gsad':
+				content => template('/tmp/vagrant-puppet/modules-0/openvas/templates/etc/sysconfig/gsad'),
+				ensure  => file,
+				group   => root,
+				mode    => 0644,
+				owner   => root;
 			'/etc/yum.repos.d':
 				ensure => directory;
 			'/etc/yum.repos.d/atomic.repo':
